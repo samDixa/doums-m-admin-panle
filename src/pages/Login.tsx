@@ -98,7 +98,7 @@ const LoginPage: React.FC = () => {
                                 </div>
                             </div>
                             <div className="space-y-2">
-                                <Label htmlFor="password" underline className="text-slate-700 dark:text-zinc-300 ml-1">Password</Label>
+                                <Label htmlFor="password" className="text-slate-700 dark:text-zinc-300 ml-1">Password</Label>
                                 <div className="relative">
                                     <Lock className="absolute left-3 top-3 h-4 w-4 text-slate-400" />
                                     <Input

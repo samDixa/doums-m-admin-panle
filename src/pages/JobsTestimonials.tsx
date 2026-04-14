@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Briefcase, MessageSquare, Plus, Loader2, Link as LinkIcon, Star, Trash2 } from 'lucide-react';
-import api from '@/lib/api';
+// import api from '@/lib/api'; // Uncomment when backend APIs are ready
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
@@ -51,7 +51,7 @@ const JobsTestimonialsPage: React.FC = () => {
     const [isCreatingTestimonial, setIsCreatingTestimonial] = useState(false);
     const [isTestimonialDialogOpen, setIsTestimonialDialogOpen] = useState(false);
     const [newTestimonial, setNewTestimonial] = useState({ student_name: '', course_name: '', review_text: '', rating: 5 });
-    const [testimonialImage, setTestimonialImage] = useState<File | null>(null);
+    const [_testimonialImage, setTestimonialImage] = useState<File | null>(null);
 
     const { toast } = useToast();
 
