@@ -5,7 +5,7 @@ import {
     Layers,
     ShieldCheck
 } from 'lucide-react';
-import api from '@/lib/api';
+import api, { API_BASE_URL } from '@/lib/api';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
@@ -51,7 +51,7 @@ interface Course {
     title: string;
 }
 
-const BASE_URL = 'https://doums-m-backend-production.up.railway.app';
+// Using API_BASE_URL from @/lib/api
 
 const HomeScreen: React.FC = () => {
     const [banners, setBanners] = useState<Banner[]>([]);
@@ -180,7 +180,7 @@ const HomeScreen: React.FC = () => {
 
     const getImageUrl = (url: string) => {
         if (url.startsWith('http')) return url;
-        return `${BASE_URL}${url}`;
+        return `${API_BASE_URL}${url}`;
     };
 
     return (
