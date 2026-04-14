@@ -64,7 +64,7 @@ const CoursesPage: React.FC = () => {
 
     const fetchCourses = async () => {
         try {
-            const response = await api.get('/courses');
+            const response = await api.get('/courses/');
             setCourses(response.data);
         } catch (error) {
             toast({

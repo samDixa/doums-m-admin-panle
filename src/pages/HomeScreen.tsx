@@ -75,7 +75,7 @@ const HomeScreen: React.FC = () => {
             const [bannersRes, featuredRes, coursesRes] = await Promise.all([
                 api.get('/admin/banners'),
                 api.get('/admin/featured-batches'),
-                api.get('/courses')
+                api.get('/courses/')
             ]);
             setBanners(bannersRes.data);
             setFeaturedBatches(featuredRes.data || []);

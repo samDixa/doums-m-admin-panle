@@ -59,7 +59,7 @@ const TestsPage: React.FC = () => {
         setIsLoading(true);
         try {
             const [testsRes] = await Promise.all([
-                api.get('/tests'),
+                api.get('/tests/'),
                 // In a real app we might fetch global questions, but let's assume we list them
             ]);
             setTests(testsRes.data);

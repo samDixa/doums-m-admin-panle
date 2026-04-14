@@ -82,7 +82,7 @@ const HomeCategories: React.FC = () => {
 
     const fetchAvailableTests = async () => {
         try {
-            const res = await api.get('/tests');
+            const res = await api.get('/tests/');
             setAvailableTests(res.data);
         } catch (error) {
             console.error(error);
