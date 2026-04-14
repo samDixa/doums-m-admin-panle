@@ -104,7 +104,7 @@ const UsersPage: React.FC = () => {
             toast({
                 variant: "destructive",
                 title: "Error",
-                description: error.response?.data?.detail || "Failed to create user.",
+                description: (() => { const d = error.response?.data?.detail; return (typeof d === "string" ? d : (Array.isArray(d) ? d[0]?.msg : "Failed to create user.")); })(),
             });
         } finally {
             setIsCreating(false);
@@ -132,7 +132,7 @@ const UsersPage: React.FC = () => {
             toast({
                 variant: "destructive",
                 title: "Error",
-                description: error.response?.data?.detail || "Failed to update user.",
+                description: (() => { const d = error.response?.data?.detail; return (typeof d === "string" ? d : (Array.isArray(d) ? d[0]?.msg : "Failed to update user.")); })(),
             });
         } finally {
             setIsUpdating(false);
@@ -152,7 +152,7 @@ const UsersPage: React.FC = () => {
             toast({
                 variant: "destructive",
                 title: "Error",
-                description: error.response?.data?.detail || "Failed to delete user.",
+                description: (() => { const d = error.response?.data?.detail; return (typeof d === "string" ? d : (Array.isArray(d) ? d[0]?.msg : "Failed to delete user.")); })(),
             });
         }
     };
@@ -170,7 +170,7 @@ const UsersPage: React.FC = () => {
             toast({
                 variant: "destructive",
                 title: "Error",
-                description: error.response?.data?.detail || "Failed to reset password.",
+                description: (() => { const d = error.response?.data?.detail; return (typeof d === "string" ? d : (Array.isArray(d) ? d[0]?.msg : "Failed to reset password.")); })(),
             });
         }
     };

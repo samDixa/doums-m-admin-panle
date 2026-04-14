@@ -125,10 +125,19 @@ const CoursesPage: React.FC = () => {
             setLogoPreview(null);
             fetchCourses();
         } catch (error: any) {
+            let errorMsg = "Criticial initialization error.";
+            const detail = error.response?.data?.detail;
+            if (detail) {
+                if (typeof detail === 'string') {
+                    errorMsg = detail;
+                } else if (Array.isArray(detail) && detail.length > 0) {
+                    errorMsg = `${detail[0].loc?.join('.')} : ${detail[0].msg}`;
+                }
+            }
             toast({
                 variant: "destructive",
                 title: "Launch Failed",
-                description: error.response?.data?.detail || "Criticial initialization error.",
+                description: errorMsg,
             });
         } finally {
             setIsCreating(false);
