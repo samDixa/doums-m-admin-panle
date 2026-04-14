@@ -119,9 +119,7 @@ const HomeScreen: React.FC = () => {
                 formData.append('navigation_target', navigationTarget);
             }
 
-            await api.post('/admin/banner', formData, {
-                headers: { 'Content-Type': 'multipart/form-data' },
-            });
+            await api.post('/admin/banner', formData);
 
             toast({ title: "Banner Published", description: "New banner live." });
             setIsCreateDialogOpen(false);

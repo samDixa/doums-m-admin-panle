@@ -124,9 +124,7 @@ const HomeCategories: React.FC = () => {
             formData.append('title', subCatForm.title);
             formData.append('category_id', selectedCategory.id.toString());
             formData.append('file', subCatForm.iconFile);
-            await api.post('/admin/sub_category', formData, {
-                headers: { 'Content-Type': 'multipart/form-data' }
-            });
+            await api.post('/admin/sub_category', formData);
             toast({ title: "Success", description: "Sub-category created." });
             setDialogOpen({ ...dialogOpen, subCat: false });
             setSubCatForm({ title: '', iconFile: null });
@@ -145,7 +143,7 @@ const HomeCategories: React.FC = () => {
             formData.append('title', lectureForm.title);
             formData.append('sub_category_id', selectedSubCategory.id.toString());
             formData.append('file', lectureForm.file);
-            await api.post('/admin/sub_category_lecture', formData, { headers: { 'Content-Type': 'multipart/form-data' } });
+            await api.post('/admin/sub_category_lecture', formData);
             setDialogOpen({ ...dialogOpen, lecture: false });
             setLectureForm({ title: '', file: null });
             fetchSubCategoryDetail(selectedSubCategory.id);
@@ -161,7 +159,7 @@ const HomeCategories: React.FC = () => {
             formData.append('title', noteForm.title);
             formData.append('sub_category_id', selectedSubCategory.id.toString());
             formData.append('file', noteForm.file);
-            await api.post('/admin/sub_category_note', formData, { headers: { 'Content-Type': 'multipart/form-data' } });
+            await api.post('/admin/sub_category_note', formData);
             setDialogOpen({ ...dialogOpen, note: false });
             setNoteForm({ title: '', file: null });
             fetchSubCategoryDetail(selectedSubCategory.id);
