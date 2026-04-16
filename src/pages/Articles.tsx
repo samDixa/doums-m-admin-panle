@@ -38,7 +38,6 @@ const ArticlesNotificationsPage: React.FC = () => {
     const navigate = useNavigate();
     const [isPublishingArticle, setIsPublishingArticle] = useState(false);
     const [isSendingNotification, setIsSendingNotification] = useState(false);
-    const [isLoading, setIsLoading] = useState(true);
     
     const [articles, setArticles] = useState<Article[]>([]);
     const [notifications, setNotifications] = useState<Notification[]>([]);
@@ -52,7 +51,6 @@ const ArticlesNotificationsPage: React.FC = () => {
     const { toast } = useToast();
 
     const fetchData = async () => {
-        setIsLoading(true);
         try {
             const [artRes, notifRes] = await Promise.all([
                 api.get('/feed/articles'),
@@ -63,7 +61,6 @@ const ArticlesNotificationsPage: React.FC = () => {
         } catch (error) {
             console.error("Fetch error:", error);
         } finally {
-            setIsLoading(false);
         }
     };
 
