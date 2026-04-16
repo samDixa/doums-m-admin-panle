@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { Plus, Bell, FileText, Send, CheckCircle, Loader2 } from 'lucide-react';
+import { Plus, Bell, FileText, Send, CheckCircle, Loader2, Trash2 } from 'lucide-react';
 import api from '@/lib/api';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -8,12 +8,40 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { 
+    Table, 
+    TableBody, 
+    TableCell, 
+    TableHead, 
+    TableHeader, 
+    TableRow 
+} from '@/components/ui/table';
+
+interface Article {
+    id: number;
+    title: string;
+    content: string;
+    created_at: string;
+}
+
+interface Notification {
+    id: number;
+    notification: {
+        title: string;
+        message: string;
+        created_at: string;
+    }
+}
 
 const ArticlesNotificationsPage: React.FC = () => {
     const location = useLocation();
     const navigate = useNavigate();
     const [isPublishingArticle, setIsPublishingArticle] = useState(false);
     const [isSendingNotification, setIsSendingNotification] = useState(false);
+    const [isLoading, setIsLoading] = useState(true);
+    
+    const [articles, setArticles] = useState<Article[]>([]);
+    const [notifications, setNotifications] = useState<Notification[]>([]);
     
     // Determine active tab based on path
     const activeTab = location.pathname.includes('articles') ? 'articles' : 'notifications';
@@ -23,6 +51,26 @@ const ArticlesNotificationsPage: React.FC = () => {
 
     const { toast } = useToast();
 
+    const fetchData = async () => {
+        setIsLoading(true);
+        try {
+            const [artRes, notifRes] = await Promise.all([
+                api.get('/feed/articles'),
+                api.get('/notifications/global')
+            ]);
+            setArticles(artRes.data || []);
+            setNotifications(notifRes.data || []);
+        } catch (error) {
+            console.error("Fetch error:", error);
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        fetchData();
+    }, []);
+
     const handlePublishArticle = async (e: React.FormEvent) => {
         e.preventDefault();
         setIsPublishingArticle(true);
@@ -30,10 +78,22 @@ const ArticlesNotificationsPage: React.FC = () => {
             await api.post('/admin/article', newArticle);
             toast({ title: "Article Published", description: "Clinical case data broadcasted successfully." });
             setNewArticle({ title: '', content: '', is_clinical_case: true, is_published: true });
+            fetchData();
         } catch (error) {
             toast({ variant: "destructive", title: "Error", description: "Failed to publish article." });
         } finally {
             setIsPublishingArticle(false);
+        }
+    };
+
+    const handleDeleteArticle = async (id: number) => {
+        if (!confirm("Are you sure you want to delete this article?")) return;
+        try {
+            await api.delete(`/admin/article/${id}`);
+            toast({ title: "Article Deleted" });
+            fetchData();
+        } catch (error) {
+            toast({ variant: "destructive", title: "Error", description: "Failed to delete article." });
         }
     };
 
@@ -44,6 +104,7 @@ const ArticlesNotificationsPage: React.FC = () => {
             await api.post('/admin/notification', newNotification);
             toast({ title: "Signal Sent", description: "Platform-wide notification delivered." });
             setNewNotification({ title: '', message: '', type: 'in_app', is_global: true });
+            fetchData();
         } catch (error) {
             toast({ variant: "destructive", title: "Error", description: "Failed to send notification signal." });
         } finally {
@@ -68,7 +129,7 @@ const ArticlesNotificationsPage: React.FC = () => {
                     </TabsTrigger>
                 </TabsList>
 
-                <TabsContent value="notifications">
+                <TabsContent value="notifications" className="space-y-6">
                     <Card className="border-slate-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/50 text-slate-900 dark:text-white backdrop-blur-xl">
                         <CardHeader>
                             <CardTitle className="flex items-center gap-2">
@@ -105,9 +166,39 @@ const ArticlesNotificationsPage: React.FC = () => {
                             </form>
                         </CardContent>
                     </Card>
+
+                    <Card className="border-slate-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/50">
+                        <CardHeader>
+                            <CardTitle>Recent Notifications</CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                            <Table>
+                                <TableHeader>
+                                    <TableRow>
+                                        <TableHead>Title</TableHead>
+                                        <TableHead>Message</TableHead>
+                                        <TableHead>Date</TableHead>
+                                    </TableRow>
+                                </TableHeader>
+                                <TableBody>
+                                    {notifications.length === 0 ? (
+                                        <TableRow><TableCell colSpan={3} className="text-center py-8">No notifications sent yet</TableCell></TableRow>
+                                    ) : (
+                                        notifications.map((n) => (
+                                            <TableRow key={n.id}>
+                                                <TableCell className="font-semibold">{n.notification.title}</TableCell>
+                                                <TableCell className="max-w-[400px] truncate">{n.notification.message}</TableCell>
+                                                <TableCell>{new Date(n.notification.created_at).toLocaleDateString()}</TableCell>
+                                            </TableRow>
+                                        ))
+                                    )}
+                                </TableBody>
+                            </Table>
+                        </CardContent>
+                    </Card>
                 </TabsContent>
 
-                <TabsContent value="articles">
+                <TabsContent value="articles" className="space-y-6">
                     <Card className="border-slate-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/50 text-slate-900 dark:text-white backdrop-blur-xl">
                         <CardHeader>
                             <CardTitle className="flex items-center gap-2">
@@ -153,6 +244,42 @@ const ArticlesNotificationsPage: React.FC = () => {
                                     Publish Intel
                                 </Button>
                             </form>
+                        </CardContent>
+                    </Card>
+
+                    <Card className="border-slate-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/50">
+                        <CardHeader>
+                            <CardTitle>Article Repository</CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                            <Table>
+                                <TableHeader>
+                                    <TableRow>
+                                        <TableHead>Title</TableHead>
+                                        <TableHead>Snippet</TableHead>
+                                        <TableHead>Date</TableHead>
+                                        <TableHead className="text-right">Actions</TableHead>
+                                    </TableRow>
+                                </TableHeader>
+                                <TableBody>
+                                    {articles.length === 0 ? (
+                                        <TableRow><TableCell colSpan={4} className="text-center py-8">No articles found in repository</TableCell></TableRow>
+                                    ) : (
+                                        articles.map((a) => (
+                                            <TableRow key={a.id}>
+                                                <TableCell className="font-semibold">{a.title}</TableCell>
+                                                <TableCell className="max-w-[300px] truncate italic text-slate-500">{a.content}</TableCell>
+                                                <TableCell>{new Date(a.created_at).toLocaleDateString()}</TableCell>
+                                                <TableCell className="text-right">
+                                                    <Button variant="ghost" size="icon" onClick={() => handleDeleteArticle(a.id)} className="text-rose-500 hover:text-rose-600 hover:bg-rose-50">
+                                                        <Trash2 className="h-4 w-4" />
+                                                    </Button>
+                                                </TableCell>
+                                            </TableRow>
+                                        ))
+                                    )}
+                                </TableBody>
+                            </Table>
                         </CardContent>
                     </Card>
                 </TabsContent>
