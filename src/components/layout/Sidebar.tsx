@@ -37,6 +37,7 @@ const menuItems = [
     { title: 'Daily QOTD', icon: HelpCircle, url: '/qotd' },
     { title: 'Courses', icon: BookOpen, url: '/courses' },
     { title: 'Tests & MCQs', icon: ClipboardList, url: '/tests' },
+    { title: 'Test Series', icon: Layers, url: '/test-series' },
     { title: 'Jobs & Feedback', icon: Briefcase, url: '/jobs' },
     { title: 'Articles', icon: FileText, url: '/articles' },
     { title: 'Notifications', icon: Bell, url: '/notifications' },

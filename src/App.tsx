@@ -10,6 +10,7 @@ import UsersPage from '@/pages/Users';
 import HomeScreen from '@/pages/HomeScreen';
 import HomeCategories from '@/pages/HomeCategories';
 import QOTDPage from '@/pages/QOTD';
+import TestSeriesPage from '@/pages/TestSeries';
 import JobsTestimonialsPage from '@/pages/JobsTestimonials';
 import { Toaster } from '@/components/ui/toaster';
 
@@ -34,6 +35,7 @@ function App() {
               <Route path="qotd" element={<QOTDPage />} />
               <Route path="courses" element={<CoursesPage />} />
               <Route path="tests" element={<TestsPage />} />
+              <Route path="test-series" element={<TestSeriesPage />} />
               <Route path="jobs" element={<JobsTestimonialsPage />} />
               <Route path="articles" element={<ArticlesNotificationsPage />} />
               <Route path="notifications" element={<ArticlesNotificationsPage />} />
